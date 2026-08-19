@@ -17,5 +17,26 @@ export default function MusicPlayer() {
 }
 
 const styles = StyleSheet.create({
-    
+    container: {
+        flex: 1,
+        backgroundColor: colors.background,
+    },
+    content: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 24,
+    },
+    eyebrown: {
+        color: colors.primary,
+        fontSize: 11,
+        fontWeight: '800',
+        letterSpacing: 1.8
+    },
+    title: {
+        marginTop: 8,
+        color: colors.text,
+        fontSize: 32,
+
+    }
 })

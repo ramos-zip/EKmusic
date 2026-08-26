@@ -32,11 +32,27 @@ export default function MusicPlayer() {
 
     return (
     <SafeAreaView style={styles.container}>
-        <View style={styles.content}>
+        <View style={styles.header}>
             <Text style={styles.eyebrown}>Tocando agora..</Text>
-            <Text style={styles.title}>EKmusic</Text>
-            <Text style={styles.description}>Nosso player começa aqui</Text>
+            <Text style={styles.counter}>
+                {selectedIndex + 1} de {songs.length}
+            </Text>
         </View>
+
+        <FlatList 
+            data={songs}
+            horizontal
+            pagingEnabled
+            renderItem={renderArtwork}
+            keyExtractor={(item) => String(item.id)}
+            showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={handleMomentumEnd}
+        />
+
+            <View style={styles.metadata}>
+                <Text style={styles.songTitle}>{currentSong.title}</Text>
+                <Text style={styles.songArtist}>{currentSong.artist}</Text>
+            </View>
     </SafeAreaView>
   )
 }
@@ -45,6 +61,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
+    },
+    header:{
+        height: 70,
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     content: {
         flex: 1,
@@ -58,10 +81,34 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         letterSpacing: 1.8
     },
+    counter:{
+        color: colors.textSecundary,
+        fontSize: 12,
+    },
     title: {
         marginTop: 8,
         color: colors.text,
         fontSize: 32,
-
+    },
+    artworkPage:{
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    metadata: {
+        minHeight: 110,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 24,
+    },
+    songTitle: {
+        color: colors.text,
+        fontSize: 22,
+        fontWeight: '800',
+        textAling: 'center',
+    },
+    songArtist: {
+        marginTop: 6,
+        color: colors.textSecundary,
+        fontSize: 14,
     }
 })

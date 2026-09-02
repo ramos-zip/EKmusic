@@ -3,7 +3,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { setAudioModeAsync, useAudioPlaylist, useAudioPlaylistStatus,} from 'expo-audio';
 import { AppState, FlatList, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { songs } from '../model/data';
+import songs  from '../model/data';
 import colors from '../theme/colors';
 
 const audioSources = songs.map((song) => song.url);
@@ -21,7 +21,7 @@ export default function MusicPlayer() {
     );
 
     const playlist = useAudioPlaylist(playlistOptions);
-    const status = useAudioPlayerStatus(playlist);
+    const status = useAudioPlaylistStatus(playlist);
 
     const currentSong = songs[selectedIndex];
     const artworkSize = Math.min(width - 40, 380);
@@ -82,12 +82,12 @@ export default function MusicPlayer() {
 
     return (
     <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
             <Text style={styles.eyebrown}>Tocando agora..</Text>
             <Text style={styles.counter}>
                 {selectedIndex + 1} de {songs.length}
             </Text>
-        </View>
+        </View> */}
 
         <FlatList 
             data={songs}
@@ -103,6 +103,19 @@ export default function MusicPlayer() {
                 <Text style={styles.songTitle}>{currentSong.title}</Text>
                 <Text style={styles.songArtist}>{currentSong.artist}</Text>
             </View>
+
+            <Pressable
+                disabled={!status.isLoaded}
+                onPress={handlePlayPause}
+                style={styles.playButton}
+            >
+                <Ionicons
+                    name={status.playing ? 'pause' : 'play'}
+                    size={38}
+                    color={colors.background} 
+                />
+            </Pressable>
+
     </SafeAreaView>
   )
 }
@@ -110,7 +123,9 @@ export default function MusicPlayer() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        alignItems: 'center',
         backgroundColor: colors.background,
+        paddingBottom: 28,
     },
     header:{
         height: 70,
@@ -139,10 +154,18 @@ const styles = StyleSheet.create({
         marginTop: 8,
         color: colors.text,
         fontSize: 32,
+        fontWeight: 800,
+    },
+    description: {
+        marginTop: 10,
+        justifyContent: 'center',
     },
     artworkPage:{
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    artwork: {
+        borderRadius: 24,
     },
     metadata: {
         minHeight: 110,
@@ -158,7 +181,15 @@ const styles = StyleSheet.create({
     },
     songArtist: {
         marginTop: 6,
-        color: colors.textSecundary,
+        color: colors.textSecondary,
         fontSize: 14,
+    },
+    playButton: {
+        width: 78,
+        height: 78,
+        borderRadius: 39,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.primary,
     }
 })

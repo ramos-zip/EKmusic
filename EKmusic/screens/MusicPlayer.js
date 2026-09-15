@@ -1,10 +1,29 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { setAudioModeAsync, useAudioPlaylist, useAudioPlaylistStatus,} from 'expo-audio';
-import { AppState, FlatList, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
+import Slider from '@react-native-community/slider';
+import { LinearGradient } from 'expo-linear-gradient'
+import { 
+    setAudioModeAsync,
+    useAudioPlaylist, 
+    useAudioPlaylistStatus,
+} from 'expo-audio';
+import { 
+    AppState,
+    FlatList, 
+    Image,
+    Platform, 
+    Pressable,
+    Share, 
+    StyleSheet, 
+    Text, 
+    useWindowDimensions, 
+    View 
+} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import IconButton from '../components/IconButton';
 import songs  from '../model/data';
 import colors from '../theme/colors';
+import formatTime from '../utils/formatTime';
 
 const audioSources = songs.map((song) => song.url);
 
@@ -36,28 +55,46 @@ export default function MusicPlayer() {
     const isCompact = height < 700;
     const contentWidth = Math.min(Math.max(width - 40, 240), 460);
     const artworkSize = Math.min(
-        contentwidth - 40, 380
+        contentWidth,
         Math.max(isCompact ? 190: 240, 
             height * (isCompact ? 0.34 : 0.4)),
             420
     );
+    const duration = Number.isFinite(status.duration) ? status.duration : 0;
+    const currentTime = Number.isFinite(status.currentTime) ? status.currentTime : 0;
+    const displayPosition = isSeeking ? seekPosition : currentTime;
+    const playerUnavaible = !status.isLoaded || status.isBuffering;
 
     useEffect(() => {
         setAudioModeAsync({
             playsInSilentMode: true,
             shouldPlayInBackground: false,
             interruptionMode: 'doNotMix',
+        }).catch(() => {
+            setErrorMessage('Não foi possível configurar a reprodução de áudio.');
         })
     }, []);
-
-    useEffect(() => {
-        if (Number.isInteger(status.currentIndex)) {
-            setSelectedIndex(status.currentIndex);
-        }
-    }, [status.currentIndex]);
+    
     useEffect(() =>  {
         playlist.loop = repeatOne ? 'single' : 'none';
     }, [playlist, repeatOne]);
+
+    useEffect(() => {
+        if (
+            Number.isInteger(status.currentIndex) && 
+            status.currentIndex >= 0 &&
+            status.currentIndex < songs.length
+        ) {
+            setSelectedIndex(status.currentIndex);
+        }
+    }, [status.currentIndex]);
+    
+    useEffect(() => {
+        listRef.current?.scrollToIndex({
+            index: selectedIndex,
+            animated: true,
+        });
+    }, [selectedIndex, width]);
 
     function selectSong(index){
         if (index < 0 || index >= songs.length || index === selectedIndex){

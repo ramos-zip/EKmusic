@@ -48,6 +48,13 @@ const songs = [
     artwork: require('../assets/img/valdemir.png'),
     url: require('../assets/audio/valdemir.mp3'),
   },
+  {
+    id: 8,
+    title: 'Everton de Fernando Sobral, o cara dboa',
+    artist: 'JA Gallo Junior',
+    artwork: require('../assets/img/sobral.png'),
+    url: require('../assets/audio/sobral.mp3'),
+  },
 ];
 
 export default songs;
